@@ -41,6 +41,10 @@ packages:
 #
 extra-deps:
 - hip-1.5.4.0@sha256:f1a79c096dd5ddf4debbf0b351e20a93232d550c04816f71ae1069df72edc12d,6988
+- easytensor-2.1.0.0
+- constraints-deriving-1.1.1.0@sha256:11331f428a6859c9abb05862db0eadf36d9be3a1c9da8516f7cc6e120cd38d89,3900
+- dimensions-2.1.0.0@sha256:c598a801f4ef24d13065a8f6a91b2b0d8f0668623bd4f7a866fa0606fe8b9885,2263
+- haskell-src-exts-1.22.0@sha256:f558923a9c8f57402c33a8cc871b934027a5c65414404c87239f6cbd7357d54e,4541
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

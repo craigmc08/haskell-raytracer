@@ -11,6 +11,34 @@ packages:
       sha256: 4d97960499bd1bdac9892a8ed53c9511f957d54021bfb26551b98db886092fa8
   original:
     hackage: hip-1.5.4.0@sha256:f1a79c096dd5ddf4debbf0b351e20a93232d550c04816f71ae1069df72edc12d,6988
+- completed:
+    hackage: easytensor-2.1.0.0@sha256:838f0134abcc444914ecf90775ae6e53fd2d3ad1775e1389606d2993116ded82,5271
+    pantry-tree:
+      size: 4922
+      sha256: 659c1145f8cea755b0cfcab8fc381e4f1fa0f05a18ba045da9997ef0dc067bc8
+  original:
+    hackage: easytensor-2.1.0.0
+- completed:
+    hackage: constraints-deriving-1.1.1.0@sha256:11331f428a6859c9abb05862db0eadf36d9be3a1c9da8516f7cc6e120cd38d89,3900
+    pantry-tree:
+      size: 3134
+      sha256: e23f7324a47b2b21d98146ce168630466de51c49ceb5ba81508eb39055f674e0
+  original:
+    hackage: constraints-deriving-1.1.1.0@sha256:11331f428a6859c9abb05862db0eadf36d9be3a1c9da8516f7cc6e120cd38d89,3900
+- completed:
+    hackage: dimensions-2.1.0.0@sha256:c598a801f4ef24d13065a8f6a91b2b0d8f0668623bd4f7a866fa0606fe8b9885,2263
+    pantry-tree:
+      size: 1303
+      sha256: 9ca9bd767a26d86249f85ddeb3df58d3bb1b56b6a1007203d0f2cb34ccedf427
+  original:
+    hackage: dimensions-2.1.0.0@sha256:c598a801f4ef24d13065a8f6a91b2b0d8f0668623bd4f7a866fa0606fe8b9885,2263
+- completed:
+    hackage: haskell-src-exts-1.22.0@sha256:f558923a9c8f57402c33a8cc871b934027a5c65414404c87239f6cbd7357d54e,4541
+    pantry-tree:
+      size: 96940
+      sha256: 597b6f48bd409a4d0da013c4e356945c42e0d098966035d3aa68cd4a3ccd66c9
+  original:
+    hackage: haskell-src-exts-1.22.0@sha256:f558923a9c8f57402c33a8cc871b934027a5c65414404c87239f6cbd7357d54e,4541
 snapshots:
 - completed:
     size: 524804
