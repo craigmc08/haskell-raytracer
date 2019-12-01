@@ -44,12 +44,33 @@ data RayHit = RayHit { rh_getPos :: Vec3d
                      , rh_getColor :: Vec3d
                      } deriving Show
 
-data SVector = UV | Position | Normal | VecConst Vec3d deriving Show
-data SValue = ValConst Double | RayLength deriving Show
-data SColor = ColVertex | ColVector SVector | ColConst SValue SValue SValue deriving Show
-data BRDF = Emission | Diffuse | Glossy | BRDFEmpty deriving Show
+data SVOp = VAdd | VSub | VDot | VCross | VMul | VDiv | VAbs | VMod deriving Show
+data SOp = Add | Sub | Mul | Div | Abs | Mod | LessThan | GreaterThan deriving Show
+data SVector = UV
+             | Position
+             | Normal
+             | VecConst Double Double Double
+             | VecMath SVOp SVector SVector
+             | CombineXYZ SValue SValue SValue
+             deriving Show
+data SValue = ValConst Double
+            | RayLength
+            | ValMath SOp SValue SValue
+            | SeparateX SVector | SeparateY SVector | SeparateZ SVector
+            | SeparateR SColor | SeparateG SColor | SeparateB SColor
+            deriving Show
+data SColor = ColVertex
+            | ColVector SVector
+            | ColConst Double Double Double
+            | CombineRGB SValue SValue SValue
+            deriving Show
+data BRDF = Emission SColor SValue
+          | Diffuse SColor
+          | Glossy SColor SValue
+          | BRDFEmpty
+          deriving Show
 
-data Light = Directional { l_getRadius :: Double
+data Light = Directional { l_getAngle :: Double
                          , l_getStrength :: Double
                          , l_getDirection :: Vec3d
                          , l_getColor :: Vec3d
