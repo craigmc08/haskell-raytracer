@@ -51,6 +51,7 @@ state monad will be used for rendering to keep track of scene information and th
 
 ## progress over time
 Time-ordered series of images as the raytracer has new features added.
+
 | Date | Image |
 |:-:|:-:|
 | 12/30/2019 | ![Two quads forming an L-shape, viewed from head on. Includes sharp sun shadows and a blue sky](images/current-state-12-30-2019.png) |
