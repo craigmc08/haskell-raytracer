@@ -7,7 +7,7 @@ module Shader ( sampleBRDF, probability, reflectance
 import Types
 import Numeric.Vector
 import Numeric.Scalar (fromScalar, scalar)
-import Control.Monad.Reader
+import Control.Monad.State
 import VecUtil (unpack3, unpack2)
 
 -- UTIL STUFF
@@ -19,14 +19,14 @@ fmod n d = n - (fromIntegral $ truncate $ n / d) * d
 
 -- BRDF STUFF
 
-sampleBRDF :: BRDF -> Reader SceneContext (Maybe Ray)
+sampleBRDF :: BRDF -> State SceneContext (Maybe Ray)
 sampleBRDF BRDFEmpty = return Nothing
 
-probability :: BRDF -> Vec3d -> Reader SceneContext Double
+probability :: BRDF -> Vec3d -> State SceneContext Double
 probability BRDFEmpty _ = return 0
 probability (Diffuse _) _ = return 0.15915494309 -- 1 / (2 * PI)
 
-reflectance :: BRDF -> Reader SceneContext Vec3d
+reflectance :: BRDF -> State SceneContext Vec3d
 reflectance BRDFEmpty = return $ vec3 0 0 0
 
 reflectance (Diffuse col) = do
@@ -46,19 +46,19 @@ reflectance (Glossy col roughness) = do
 
 -- VECTOR STUFF
 
-sampleVec :: SVector -> Reader SceneContext Vec3d
+sampleVec :: SVector -> State SceneContext Vec3d
 
 sampleVec UV = do
-  ss <- ask
+  ss <- get
   let (u, v) = unpack2 $ rh_getTexCoord $ ss_getHit ss
   return $ vec3 u v 0
 
 sampleVec Position = do
-  ss <- ask
+  ss <- get
   return $ rh_getPos $ ss_getHit ss
 
 sampleVec Normal = do
-  ss <- ask
+  ss <- get
   return $ rh_getNormal $ ss_getHit ss
 
 sampleVec (VecConst x y z) = return $ vec3 x y z
@@ -86,10 +86,10 @@ sampleVec (CombineXYZ x y z) = do
 
 -- COLOR STUFF
 
-sampleCol :: SColor -> Reader SceneContext Vec3d
+sampleCol :: SColor -> State SceneContext Vec3d
 
 sampleCol ColVertex = do
-  ss <- ask
+  ss <- get
   return $ rh_getColor $ ss_getHit ss
 
 sampleCol (ColVector v) = sampleVec v
@@ -105,12 +105,12 @@ sampleCol (CombineRGB vr vg vb) = do
 -- END COLOR STUFF
 
 -- VALUE STUFF
-sampleVal :: SValue -> Reader SceneContext Double
+sampleVal :: SValue -> State SceneContext Double
 
 sampleVal (ValConst x) = return x
 
 sampleVal RayLength = do
-  ss <- ask
+  ss <- get
   return $ rh_getDistance $ ss_getHit ss
 
 sampleVal (ValMath op l r) = do

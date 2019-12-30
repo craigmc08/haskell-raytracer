@@ -4,4 +4,4 @@ module Lib
     ) where
 
 import Img
-import ImgConstructor
+import Render

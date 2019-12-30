@@ -7,7 +7,7 @@ import Control.Parallel.Strategies
 import Numeric.Vector
 import Numeric.Scalar (fromScalar)
 import Types
-import Control.Monad.Reader
+import Control.Monad.State
 import Camera (rayFrom)
 import Raycast (raycast)
 import Shader (reflectance, sampleBRDF, probability)
@@ -27,9 +27,9 @@ possibly :: (a -> b) -> b -> Maybe a -> b
 possibly _ def Nothing = def
 possibly f _ (Just x) = f x
 
-shade :: Reader SceneContext Vec3d
+shade :: State SceneContext Vec3d
 shade = do
-  ctx <- ask
+  ctx <- get
   let hit = ss_getHit ctx
   let brdf = rh_getShader $ hit
   col <- reflectance brdf
@@ -55,7 +55,7 @@ render s = let w = s_getWidth s
                seed = 1
                gen = mkStdGen seed
            in  map2 unpack3 $
-               map2 (possibly (runReader shade . makeContext s gen) skyCol) $
+               map2 (possibly (fst . runState shade . makeContext s gen) skyCol) $
                map2 (raycast s) $
                map2 (rayFrom cam) $
                [[(fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0) | x <- [1..w]] | y <- [1..h]]
