@@ -1,6 +1,6 @@
 module Lib
     ( module Img
-    , module ImgConstructor
+    , module Render
     ) where
 
 import Img

@@ -1,6 +1,6 @@
 {-# LANGUAGE MagicHash, UnboxedTuples #-}
 
-module ImgConstructor where
+module Render (render, parRender) where
 
 import Control.Parallel.Strategies
 
@@ -60,5 +60,7 @@ render s = let w = s_getWidth s
                map2 (rayFrom cam) $
                [[(fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0) | x <- [1..w]] | y <- [1..h]]
 
+-- Found how to evaluate the list in parallel from
+-- https://stackoverflow.com/a/5606176
 parRender :: Scene -> [[(Double, Double, Double)]]
 parRender s = (render s) `using` parList rdeepseq
