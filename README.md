@@ -1,6 +1,9 @@
 # raytracer
 Triangle raytraced rendering engine written in Haskell.
 
+## current state
+![Two quads forming an L-shape, viewed from head on. Includes sharp sun shadows and a blue sky](images/current-state-12-30-2019.png)
+
 ## plans
 Below are un-edited notes from a car ride where I had the idea to make this. Enjoy.
 
@@ -45,3 +48,9 @@ shaders:
 - something like diffuse will have a space for a color type, so you can create a `Diffuse $ ConstantCol 255 0 0` to make a solid red shader
 
 state monad will be used for rendering to keep track of scene information and the random seed
+
+## progress over time
+Time-ordered series of images as the raytracer has new features added.
+| Date | Image |
+|:-:|:-:|
+| 12/30/2019 | ![Two quads forming an L-shape, viewed from head on. Includes sharp sun shadows and a blue sky](images/current-state-12-30-2019.png) |

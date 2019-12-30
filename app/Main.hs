@@ -76,8 +76,8 @@ scene = Scene { s_getCamera = cam
               , s_getObjects = [quad]
               , s_getLights = [Directional 5 1 (normalized $ vec3 0.5 (-1) (-0.4)) (vec3 1 1 1)]
               , s_getSkyColor = vec3 0.6 0.7 0.9
-              , s_getWidth = 1920
-              , s_getHeight = 1080
+              , s_getWidth = 640
+              , s_getHeight = 480
               }
 
 main :: IO ()
