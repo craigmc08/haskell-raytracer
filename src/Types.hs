@@ -22,6 +22,8 @@ data Scene = Scene { s_getCamera :: Camera
                    , s_getSkyColor :: Vec3d
                    , s_getWidth :: Int
                    , s_getHeight :: Int
+                   , s_getSeed :: Int
+                   , s_getSamples :: Int
                    } deriving Show
 
 data SceneContext = SceneContext { ss_getScene :: Scene
@@ -77,7 +79,6 @@ data Light = Directional { l_getAngle :: Double
                          }
            | Point { l_getRadius :: Double
                    , l_getStrength :: Double
-                   , l_getDirection :: Vec3d
                    , l_getColor :: Vec3d
                    } deriving Show
 

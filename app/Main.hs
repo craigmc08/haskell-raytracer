@@ -78,6 +78,8 @@ scene = Scene { s_getCamera = cam
               , s_getSkyColor = vec3 0.6 0.7 0.9
               , s_getWidth = 640
               , s_getHeight = 480
+              , s_getSeed = 1
+              , s_getSamples = 1
               }
 
 main :: IO ()
