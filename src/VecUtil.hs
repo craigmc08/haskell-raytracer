@@ -1,6 +1,6 @@
 {-# LANGUAGE MagicHash, UnboxedTuples #-}
 
-module VecUtil (unpack2, unpack3, tangentBitangent) where
+module VecUtil (unpack2, unpack3, tangentBitangent, vec3Of, vec2Of) where
 
 import Numeric.Vector
 
@@ -19,3 +19,9 @@ tangentBitangent normal =
   let tangent = normalized $ normal × (if normal == (vec3 1 0 0) then vec3 0 1 0 else vec3 1 0 0)
       bitangent = normal × tangent -- Don't need to normalize, magnitude is mathematically 1
   in (tangent, bitangent)
+
+vec3Of :: Double -> Vec3d
+vec3Of = realToFrac
+
+vec2Of :: Double -> Vec2d
+vec2Of = realToFrac

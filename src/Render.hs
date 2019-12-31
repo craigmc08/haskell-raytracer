@@ -12,7 +12,7 @@ import Camera (rayFrom)
 import Raycast (raycast)
 import Shader (reflectance, sampleBRDF, probability)
 import Scene (makeContext)
-import VecUtil (unpack3)
+import VecUtil (unpack3, vec3Of)
 import System.Random
 import SceneRandom
 import Lights
@@ -37,24 +37,47 @@ shade = do
   let scene = ss_getScene ctx
   let lights = s_getLights scene
   let norm = rh_getNormal hit
-  let newRayPos = (rh_getPos hit) + (norm * (vec3 0.01 0.01 0.01))
+
+  -- TODO: implement reflection bounces
+  let reflectColor = vec3Of 0
+  let reflectProbability = 0
+
+  let newRayPos = (rh_getPos hit) + (norm * (vec3Of 0.01))
+
   lighting <- sequence $ map (sampleLight newRayPos norm) lights
-  let lighting' = filter (>0) lighting
-  let lit = col * ((sum lighting') + (s_getSkyColor scene * (vec3 0.1 0.1 0.1)))
+  let lighting' = filter ((>0) . fst) lighting
+  lightProbabilities <- sequence $ map (probability brdf . snd) lighting'
+  let lightColors = map fst lighting'
+
+  let probabilitySum = reflectProbability + sum lightProbabilities
+
+  let adjustedReflectColor = reflectColor * vec3Of reflectProbability
+  let adjustedIncomingLighting = sum $ zipWith (*) lightColors (map vec3Of lightProbabilities)
+
+  let incomingLight = adjustedReflectColor + adjustedIncomingLighting
+
+  let lit = col * incomingLight
+
   return lit
 
-samplePixel :: Scene -> (Int, Int) -> Vec3d
-samplePixel s (x, y) = let w = s_getWidth s
-                           h = s_getHeight s
-                           cam = s_getCamera s
-                           skyCol = s_getSkyColor s
-                           -- Random seed is an arbitrary formula based on pixel location to form distinct results
-                           gen = mkStdGen $ x + y * w + x * (x + y) + (s_getSeed s)
-                       in  possibly (fst . runState shade . makeContext s gen) skyCol $
-                           raycast s $
-                           rayFrom cam $
-                           (fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0)
+samplePixel :: Scene -> (Int, Int) -> Int -> Vec3d
+samplePixel s (x, y) sample = let w = s_getWidth s
+                                  h = s_getHeight s
+                                  cam = s_getCamera s
+                                  skyCol = s_getSkyColor s
+                                  -- Random seed is an arbitrary formula based on pixel location to form distinct results
+                                  gen = mkStdGen $ (x + y * w + x * (x + y) + (s_getSeed s)) * sample
+                              in  possibly (fst . runState shade . makeContext s gen) (skyCol / (2 * pi)) $
+                                  raycast s $
+                                  rayFrom cam $
+                                  (fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0)
   
+renderPixel :: Scene -> (Int, Int) -> Vec3d
+renderPixel s p = let numSamples = s_getSamples s
+                      samples = map (samplePixel s p)  [1..numSamples]
+                  -- Multiply by 2pi for monte-carlo integration because the volume of the integration bounds is 2pi
+                  -- (integration bounds form a hemisphere)
+                  in  sum samples / fromIntegral numSamples * vec3Of (2 * pi)
 
 render :: Scene -> [[(Double, Double, Double)]]
 render s = let w = s_getWidth s
@@ -64,7 +87,7 @@ render s = let w = s_getWidth s
                seed = 1
                gen = mkStdGen seed
           in  map2 unpack3 $
-              map2 (samplePixel s) $
+              map2 (renderPixel s) $
               [ [ (x, y) | x <- [1..w] ] | y <- [1..h] ]
           --  in  map2 unpack3 $
           --      map2 (possibly (fst . runState shade . makeContext s gen) skyCol) $

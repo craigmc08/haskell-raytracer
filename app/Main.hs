@@ -79,7 +79,7 @@ scene = Scene { s_getCamera = cam
               , s_getWidth = 640
               , s_getHeight = 480
               , s_getSeed = 1
-              , s_getSamples = 1
+              , s_getSamples = 5
               }
 
 main :: IO ()
