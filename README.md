@@ -2,7 +2,7 @@
 Triangle raytraced rendering engine written in Haskell.
 
 ## current state
-![Two quads forming an L-shape, viewed from head on. Includes sharp sun shadows and a blue sky](images/current-state-12-30-2019.png)
+![Two quards forming an L-shape, viewed from head on. Soft shadows, blue sky.](images/current-state-12-31-2019.png)
 
 ## plans
 Below are un-edited notes from a car ride where I had the idea to make this. Enjoy.
