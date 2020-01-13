@@ -9,6 +9,8 @@ import Numeric.Vector
 import Numeric.Scalar (fromScalar, scalar)
 import Control.Monad.State
 import VecUtil (unpack3, unpack2)
+import qualified SceneRandom as R
+import VecUtil (vec3Of)
 
 -- UTIL STUFF
 
@@ -21,6 +23,12 @@ fmod n d = n - (fromIntegral $ truncate $ n / d) * d
 
 sampleBRDF :: BRDF -> State SceneContext (Maybe Ray)
 sampleBRDF BRDFEmpty = return Nothing
+sampleBRDF (Diffuse _) = do
+  ctx <- get
+  let normal = rh_getNormal $ ss_getHit ctx
+  let pos = (rh_getPos (ss_getHit ctx)) + (normal * (vec3Of 0.01))
+  dir <- R.randVecHemisphere normal
+  return $ Just $ Ray pos dir
 
 probability :: BRDF -> Vec3d -> State SceneContext Double
 probability BRDFEmpty _ = return 0
@@ -31,7 +39,7 @@ reflectance BRDFEmpty = return $ vec3 0 0 0
 
 reflectance (Diffuse col) = do
   col' <- sampleCol col
-  return col'
+  return $ col'
 
 reflectance (Emission col str) = do
   col' <- sampleCol col

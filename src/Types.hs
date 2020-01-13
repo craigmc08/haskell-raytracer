@@ -24,6 +24,7 @@ data Scene = Scene { s_getCamera :: Camera
                    , s_getHeight :: Int
                    , s_getSeed :: Int
                    , s_getSamples :: Int
+                   , s_getBounces :: Int
                    } deriving Show
 
 data SceneContext = SceneContext { ss_getScene :: Scene
@@ -32,6 +33,10 @@ data SceneContext = SceneContext { ss_getScene :: Scene
                                  } deriving Show
 
 data Ray = Ray Vec3d Vec3d deriving Show
+r_getOrigin :: Ray -> Vec3d
+r_getOrigin (Ray o _) = o
+r_getDir :: Ray -> Vec3d
+r_getDir (Ray _ d) = d
 
 data RayHit = RayHit { rh_getPos :: Vec3d 
                      , rh_getRay :: Ray

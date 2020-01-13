@@ -71,15 +71,23 @@ quad = Object { o_getTris = [fstTri, sndTri, thdTri, fourTri]
               , o_getShader = shader
               }
 
+sun :: Light
+sun = Directional { l_getAngle = 2.5
+                  , l_getStrength = 1
+                  , l_getDirection = normalized $ vec3 0.5 (-1) (-0.4)
+                  , l_getColor = vec3 1 1 1
+                  }
+
 scene :: Scene
 scene = Scene { s_getCamera = cam
               , s_getObjects = [quad]
-              , s_getLights = [Directional 5 1 (normalized $ vec3 0.5 (-1) (-0.4)) (vec3 1 1 1)]
+              , s_getLights = [sun]
               , s_getSkyColor = vec3 0.6 0.7 0.9
-              , s_getWidth = 640
-              , s_getHeight = 480
+              , s_getWidth = 360
+              , s_getHeight = 240
               , s_getSeed = 1
-              , s_getSamples = 5
+              , s_getSamples = 32
+              , s_getBounces = 0
               }
 
 main :: IO ()

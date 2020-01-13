@@ -28,9 +28,8 @@ possibly :: (a -> b) -> b -> Maybe a -> b
 possibly _ def Nothing = def
 possibly f _ (Just x) = f x
 
-shade :: State SceneContext Vec3d
-shade = do
-  ctx <- get
+shade :: Int -> State SceneContext Vec3d
+shade bounceCount = get >>= (\ctx -> if bounceCount > s_getBounces (ss_getScene ctx) then return (vec3Of 0) else do
   let hit = ss_getHit ctx
   let brdf = rh_getShader $ hit
   col <- reflectance brdf
@@ -38,9 +37,17 @@ shade = do
   let lights = s_getLights scene
   let norm = rh_getNormal hit
 
-  -- TODO: implement reflection bounces
-  let reflectColor = vec3Of 0
-  let reflectProbability = 0
+  mReflectRay <- sampleBRDF brdf
+  (reflectColor, reflectProbability) <- case mReflectRay of
+    Nothing -> return (0, 0)
+    Just reflectRay -> do
+      prob <- probability brdf (r_getDir reflectRay)
+      case raycast scene reflectRay of
+        Nothing -> return $ (s_getSkyColor scene, )prob
+        Just hit -> do
+          let (v, s) = runState (shade (bounceCount + 1)) $ makeContext scene (ss_getGen ctx) hit
+          put s
+          return (v, prob) -- 1 / (2 * PI)
 
   let newRayPos = (rh_getPos hit) + (norm * (vec3Of 0.01))
 
@@ -53,12 +60,14 @@ shade = do
 
   let adjustedReflectColor = reflectColor * vec3Of reflectProbability
   let adjustedIncomingLighting = sum $ zipWith (*) lightColors (map vec3Of lightProbabilities)
-
+  
   let incomingLight = adjustedReflectColor + adjustedIncomingLighting
-
+  
   let lit = col * incomingLight
-
+  
+  reflectColor <- reflectance brdf
   return lit
+  )
 
 samplePixel :: Scene -> (Int, Int) -> Int -> Vec3d
 samplePixel s (x, y) sample = let w = s_getWidth s
@@ -67,7 +76,7 @@ samplePixel s (x, y) sample = let w = s_getWidth s
                                   skyCol = s_getSkyColor s
                                   -- Random seed is an arbitrary formula based on pixel location to form distinct results
                                   gen = mkStdGen $ (x + y * w + x * (x + y) + (s_getSeed s)) * sample
-                              in  possibly (fst . runState shade . makeContext s gen) (skyCol / (2 * pi)) $
+                              in  possibly (fst . runState (shade 0) . makeContext s gen) (skyCol / (2 * pi)) $
                                   raycast s $
                                   rayFrom cam $
                                   (fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0)
@@ -89,11 +98,6 @@ render s = let w = s_getWidth s
           in  map2 unpack3 $
               map2 (renderPixel s) $
               [ [ (x, y) | x <- [1..w] ] | y <- [1..h] ]
-          --  in  map2 unpack3 $
-          --      map2 (possibly (fst . runState shade . makeContext s gen) skyCol) $
-          --      map2 (raycast s) $
-          --      map2 (rayFrom cam) $
-          --      [[(fromIntegral x / fromIntegral w * 2.0 - 1.0, (fromIntegral h / fromIntegral w) - fromIntegral y / fromIntegral w * 2.0) | x <- [1..w]] | y <- [1..h]]
 
 -- Found how to evaluate the list in parallel from
 -- https://stackoverflow.com/a/5606176
