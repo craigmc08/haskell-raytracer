@@ -57,4 +57,4 @@ Time-ordered series of images as the raytracer has new features added.
 |:-:|:-:|:-:|
 | 12/30/2019 | ![Two quads forming an L-shape, viewed from head on. Includes sharp sun shadows and a blue sky](images/current-state-12-30-2019.png) | 640x480, 1 sample |
 | 12/31/2019 | ![Two quards forming an L-shape, viewed from head on. Soft shadows, blue sky.](images/current-state-12-31-2019.png) | 640x480, 32 samples |
-| 12/31/2019 | ![Two quards forming an L-shape, viewed from head on. Soft shadows, blue sky, ambient occlusion.](images/current-state-01-13-2020.png) | 360x240, 32 samples |
+| 12/31/2019 | ![Two quards forming an L-shape, viewed from head on. Soft shadows, blue sky, ambient occlusion.](images/current-state-01-13-2020.png) | 640x80, 1024 samples |

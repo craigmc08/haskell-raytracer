@@ -83,10 +83,10 @@ scene = Scene { s_getCamera = cam
               , s_getObjects = [quad]
               , s_getLights = [sun]
               , s_getSkyColor = vec3 0.6 0.7 0.9
-              , s_getWidth = 360
-              , s_getHeight = 240
+              , s_getWidth = 640
+              , s_getHeight = 480
               , s_getSeed = 1
-              , s_getSamples = 32
+              , s_getSamples = 1024
               , s_getBounces = 0
               }
 
