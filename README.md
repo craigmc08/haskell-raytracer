@@ -25,6 +25,7 @@ Planned features:
 - depth of field
 - lens distortion
 -?mix in csg objects into polygon scenes? maybe
+- use a bvh graph to speed up rendering
 
 far future stuff:
 - basic animation and video/image sequence rendering
