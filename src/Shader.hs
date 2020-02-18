@@ -23,6 +23,7 @@ fmod n d = n - (fromIntegral $ truncate $ n / d) * d
 
 sampleBRDF :: BRDF -> State SceneContext (Maybe Ray)
 sampleBRDF BRDFEmpty = return Nothing
+sampleBRDF (Emission _ _) = return Nothing
 sampleBRDF (Diffuse _) = do
   ctx <- get
   let normal = rh_getNormal $ ss_getHit ctx
@@ -32,19 +33,20 @@ sampleBRDF (Diffuse _) = do
 
 probability :: BRDF -> Vec3d -> State SceneContext Double
 probability BRDFEmpty _ = return 0
+probability (Emission _ _) _ = return 0.15915494309
 probability (Diffuse _) _ = return 0.15915494309 -- 1 / (2 * PI)
 
 reflectance :: BRDF -> State SceneContext Vec3d
 reflectance BRDFEmpty = return $ vec3 0 0 0
 
-reflectance (Diffuse col) = do
-  col' <- sampleCol col
-  return $ col'
-
 reflectance (Emission col str) = do
   col' <- sampleCol col
   str' <- sampleVal str
   return $ col' * (fromScalar (scalar str'))
+
+reflectance (Diffuse col) = do
+  col' <- sampleCol col
+  return $ col'
 
 reflectance (Glossy col roughness) = do
   col' <- sampleCol col

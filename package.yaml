@@ -60,6 +60,7 @@ dependencies:
 - random
 - mtl
 - parallel
+- parsec
 
 library:
   source-dirs: src
